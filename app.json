@@ -1,0 +1,17 @@
+{
+  "name": "chat-react-native",
+  "displayName": "chat-react-native",
+  "expo": {
+    "name": "chat-react-native",
+    "slug": "expo-template-bare",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
