@@ -10,7 +10,7 @@ export default function MainScreen() {
     <View>
       <Header />
       <Content />
-      <Footer />
+      {/* <Footer /> */}
     </View>
   );
 }

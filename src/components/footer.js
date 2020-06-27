@@ -6,11 +6,13 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
+  AsyncStorage,
 } from "react-native";
 
 const screenWidth = Math.round(Dimensions.get("window").width);
 
-export default function Footer() {
+export default function Footer(props) {
+  console.log({ props });
   const [selected, setSelected] = useState(0);
 
   const renderOption = (key) => (
@@ -18,7 +20,15 @@ export default function Footer() {
       style={[styles.option, key !== 3 && { borderRightWidth: 0.2 }]}
       key={key}
     >
-      <TouchableOpacity onPress={() => setSelected(key)}>
+      <TouchableOpacity
+        onPress={() => {
+          setSelected(key);
+          AsyncStorage.multiRemove(["token", "user"])
+          // .then(() =>
+          //   // props.navigation.navigate("Authentication")
+          // );
+        }}
+      >
         <Image
           source={{
             uri: "https://i.ya-webdesign.com/images/user-avatar-png-7.png",

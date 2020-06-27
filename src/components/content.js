@@ -13,10 +13,12 @@ import UserDetails from "./userDetailsModal";
 const screenHeight = Math.round(Dimensions.get("window").height);
 const viewHeight = screenHeight - 238;
 
-export default function Body() {
+export default function Body(props) {
   const [showUserDetails, setShowUserDetails] = useState(false);
   const [currentUser, setCurrentUser] = useState(0);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  // console.log({ props });
 
   const renderUserDetailsModal = ({ count }) => {
     setCurrentUser(count);
