@@ -19,6 +19,11 @@ const ScreenTwo = () => (
     <Text>Screen Two</Text>
   </View>
 );
+const ScreenThree = () => (
+  <View style={viewStyle({ backgroundColor: "palegreen" })}>
+    <Text>Screen Three</Text>
+  </View>
+);
 
 const Stack = createStackNavigator();
 export default function Main() {
@@ -38,6 +43,11 @@ export default function Main() {
         options={{ headerShown: false }}
         name="MainScreen"
         component={MainScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Three"
+        component={ScreenThree}
       />
     </Stack.Navigator>
   );

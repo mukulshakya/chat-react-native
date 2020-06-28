@@ -1,14 +1,16 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
 
 import Header from "../components/header";
 import Content from "../components/content";
 import Footer from "../components/footer";
 
-export default function MainScreen() {
+export default function MainScreen({ navigation }) {
   return (
     <View>
-      <Header />
+      <TouchableOpacity onPress={() => navigation.navigate("Three")}>
+        <Header />
+      </TouchableOpacity>
       <Content />
       {/* <Footer /> */}
     </View>
