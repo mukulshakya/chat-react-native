@@ -30,7 +30,7 @@ export default {
     },
     randomString() {
       return Math.random().toString(36).split(".")[1];
-    }
+    },
   },
   apiUrl: {
     local: "http://localhost:8000",
@@ -44,4 +44,5 @@ export default {
       user: "https://i.ya-webdesign.com/images/user-avatar-png-7.png",
     },
   },
+  imgur: { clientId: "1f3e35f19556430" },
 };

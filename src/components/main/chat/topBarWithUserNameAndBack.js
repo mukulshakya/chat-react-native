@@ -4,7 +4,11 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import constants from "../../../constants";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function TopBarWithUsernameAndBack({ navigation, username }) {
+export default function TopBarWithUsernameAndBack({
+  navigation,
+  username,
+  fromUpload,
+}) {
   return (
     <View style={styles.header}>
       <TouchableOpacity
@@ -20,15 +24,19 @@ export default function TopBarWithUsernameAndBack({ navigation, username }) {
       </TouchableOpacity>
       <Text style={styles.username}>{username}</Text>
       <TouchableOpacity
-        style={styles.icon}
+        style={[styles.icon, fromUpload && { marginTop: 18, marginRight: 5 }]}
         activeOpacity={0.7}
         onPress={() => navigation.navigate("Three")}
       >
-        <MaterialCommunityIcons
-          name="dots-vertical"
-          color={constants.colors.msgSent}
-          size={35}
-        />
+        {fromUpload ? (
+          <Text style={styles.shareText}>Share</Text>
+        ) : (
+          <MaterialCommunityIcons
+            name="dots-vertical"
+            color={constants.colors.msgSent}
+            size={35}
+          />
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -43,4 +51,5 @@ const styles = StyleSheet.create({
   },
   icon: { marginTop: 10 },
   username: { fontSize: 20, lineHeight: 60, color: constants.colors.username },
+  shareText: { fontSize: 20, color: constants.colors.msgSent },
 });

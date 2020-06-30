@@ -11,7 +11,7 @@ import Upload from "../../screens/main/upload/upload";
 
 import constants from "../../constants";
 
-const navOption = ({ label, icon, iconSize }) => ({
+const navOption = ({ label, icon, iconSize, visible }) => ({
   tabBarLabel: label,
   tabBarIcon: ({ color }) => (
     <MaterialCommunityIcons
@@ -63,7 +63,10 @@ const BottomTabNavigator = (props) => {
       <Tab.Screen
         name="Upload"
         component={Upload}
-        options={navOption({ icon: "plus-box-outline" })}
+        options={{
+          ...navOption({ icon: "plus-box-outline" }),
+          tabBarVisible: false,
+        }}
       />
       <Tab.Screen
         name="Conversations"

@@ -56,4 +56,47 @@ func.getUsers = async () => {
   }
 };
 
+func.getPosts = async () => {
+  try {
+    const res = await api.get("/posts");
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+func.uploadPost = async (payload) => {
+  try {
+    const res = await api.post("/posts", payload);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+func.uploadImage = async ({ uri, type, name }) => {
+  try {
+    console.log({ uri, type, name });
+    const formData = new FormData();
+    formData.append("image", {
+      uri,
+      type: type || "image/jpeg",
+      name: name || Math.random().toString(36).split(".")[1] + ".jpg",
+    });
+
+    const res = await axios({
+      url: "https://api.imgur.com/3/upload",
+      headers: {
+        Authorization: "Client-ID " + constants.imgur.clientId,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: formData,
+    });
+    console.log({ res });
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
 export default func;
