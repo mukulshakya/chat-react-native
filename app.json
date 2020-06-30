@@ -12,6 +12,13 @@
     ],
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "ios": {
+      "bundleIdentifier": "Yes"
+    },
+    "android": {
+      "package": "android"
+    },
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }

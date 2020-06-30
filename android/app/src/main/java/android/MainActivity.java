@@ -1,4 +1,4 @@
-package com.chatreactnative;
+package android;
 
 import android.os.Bundle;
 
