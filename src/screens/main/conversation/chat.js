@@ -7,17 +7,31 @@ import {
   TouchableWithoutFeedback,
   Platform,
   Keyboard,
+  AsyncStorage,
 } from "react-native";
 import io from "socket.io-client";
 
-import constants from "../../constants";
-import TopBarWithUsernameAndBack from "../../components/chat/topBarWithUserNameAndBack";
-import MessageInput from "../../components/chat/msgInput";
-import ReceivedMessage from "../../components/chat/receivedMsg";
-import SentMessage from "../../components/chat/sentMsg";
+import constants from "../../../constants";
+import TopBarWithUsernameAndBack from "../../../components/main/chat/topBarWithUserNameAndBack";
+import MessageInput from "../../../components/main/chat/msgInput";
+import ReceivedMessage from "../../../components/main/chat/receivedMsg";
+import SentMessage from "../../../components/main/chat/sentMsg";
 
-export default function Chat({ navigation }) {
+export default function Chat({ navigation, route }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  console.log({ route });
+
+  const onKeyboardWillShow = (e) => {
+    setKeyboardHeight(
+      e.endCoordinates.height -
+        (Platform.OS === "ios" && constants.deviceInfo.hasNotch() ? 20 : 0)
+    );
+  };
+
+  const onKeyboardWillHide = () => {
+    setKeyboardHeight(0);
+  };
 
   useEffect(() => {
     const parent = navigation.dangerouslyGetParent();
@@ -27,10 +41,11 @@ export default function Chat({ navigation }) {
       Keyboard.addListener("keyboardWillHide", onKeyboardWillHide);
     }
 
-    const socket = io("https://chatapp3690.herokuapp.com");
-    socket.on("connect", () => console.log("connection success"));
+    const socket = io(constants.apiUrl.local);
+    socketSetup(socket);
 
     return () => {
+      socket.emit("disconnect");
       if (Platform.OS === "ios") {
         Keyboard.removeListener("keyboardWillShow", onKeyboardWillShow);
         Keyboard.removeListener("keyboardWillHide", onKeyboardWillHide);
@@ -39,12 +54,19 @@ export default function Chat({ navigation }) {
     };
   }, []);
 
-  const onKeyboardWillShow = (e) => {
-    setKeyboardHeight(e.endCoordinates.height - 15);
-  };
+  const socketSetup = (socket) => {
+    socket.on("connect", async () => {
+      console.log("connection success");
 
-  const onKeyboardWillHide = () => {
-    setKeyboardHeight(0);
+      const user = await AsyncStorage.getItem("user");
+      if (user) {
+        socket.emit("join", { senderId: JSON.parse(user)["_id"] });
+      }
+    });
+    socket.on("disconnect", () => {
+      console.log("disconnect");
+      socket.emit("disconnected");
+    });
   };
 
   const generateRandomMsg = () => {
@@ -63,12 +85,20 @@ export default function Chat({ navigation }) {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.innerContainer}>
           <View style={styles.topbar}>
-            <TopBarWithUsernameAndBack navigation={navigation} />
+            <TopBarWithUsernameAndBack
+              navigation={navigation}
+              username={route.params?.username ?? "username"}
+            />
           </View>
 
           <SafeAreaView
             style={{
-              height: constants.screen.height - 200 - keyboardHeight,
+              height:
+                constants.screen.height -
+                (Platform.OS === "ios" && constants.deviceInfo.hasNotch()
+                  ? 200
+                  : 150) -
+                keyboardHeight,
             }}
           >
             <FlatList

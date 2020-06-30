@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import constants from "../../constants";
+import constants from "../../../constants";
 
-export default function UserRow({ count, showUserDetailsModal, navigation }) {
+export default function UserRow({ user, navigation }) {
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity
@@ -19,10 +19,10 @@ export default function UserRow({ count, showUserDetailsModal, navigation }) {
       <TouchableOpacity
         style={{ flex: 1 }}
         activeOpacity={0.8}
-        onPress={() => navigation.navigate("Chat")}
+        onPress={() => navigation.navigate("Chat", { username: user.username })}
       >
-        <Text style={styles.username}>username {count}</Text>
-        <Text style={styles.lastMsg}>username {count}</Text>
+        <Text style={styles.username}>{user.username}</Text>
+        <Text style={styles.lastMsg}>username</Text>
       </TouchableOpacity>
     </View>
   );

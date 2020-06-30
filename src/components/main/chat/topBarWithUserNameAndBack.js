@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
-import constants from "../../constants";
+import constants from "../../../constants";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function TopBarWithUsernameAndBack({ title, icon, navigation }) {
+export default function TopBarWithUsernameAndBack({ navigation, username }) {
   return (
     <View style={styles.header}>
       <TouchableOpacity
@@ -18,7 +18,7 @@ export default function TopBarWithUsernameAndBack({ title, icon, navigation }) {
           size={35}
         />
       </TouchableOpacity>
-      <Text style={styles.username}>Mukul Shakya</Text>
+      <Text style={styles.username}>{username}</Text>
       <TouchableOpacity
         style={styles.icon}
         activeOpacity={0.7}
@@ -37,7 +37,7 @@ export default function TopBarWithUsernameAndBack({ title, icon, navigation }) {
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    paddingTop: 50,
+    paddingTop: constants.deviceInfo.hasNotch() ? 45 : 15,
     marginLeft: 10,
     justifyContent: "space-between",
   },

@@ -2,25 +2,7 @@ import * as React from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import MainScreen from "./src/screens/mainScreen";
 import AppNavigator from "./src/navigation/appNavigator";
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// function HomeScreen() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>Home!</Text>
-//     </View>
-//   );
-// }
-
-// function SettingsScreen() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>Settings!</Text>
-//     </View>
-//   );
-// }
-
-// const Tab = createBottomTabNavigator();
+import { RecoilRoot } from "recoil";
 
 const instructions = Platform.select({
   ios: `Press Cmd+R to reload,\nCmd+D or shake for dev menu`,
@@ -28,15 +10,11 @@ const instructions = Platform.select({
 });
 
 export default function App() {
-  return <AppNavigator />;
-  // return (
-  //   <NavigationContainer>
-  //     <Tab.Navigator>
-  //       <Tab.Screen name="Home" component={HomeScreen} />
-  //       <Tab.Screen name="Settings" component={SettingsScreen} />
-  //     </Tab.Navigator>
-  //    </NavigationContainer>
-  // )
+  return (
+    <RecoilRoot>
+      <AppNavigator />
+    </RecoilRoot>
+  );
 }
 
 const styles = StyleSheet.create({

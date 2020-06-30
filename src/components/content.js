@@ -7,7 +7,7 @@ import {
   View,
   Animated,
 } from "react-native";
-import UserRow from "./conversation/userRow";
+import UserRow from "./main/conversation/userRow";
 import UserDetails from "./userDetailsModal";
 
 const screenHeight = Math.round(Dimensions.get("window").height);

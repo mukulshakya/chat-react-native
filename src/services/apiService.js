@@ -20,9 +20,9 @@ const func = {};
 
 func.register = async (payload) => {
   try {
-    console.log({ payload });
+    // console.log({ payload });
     const res = await api.post("/register", payload);
-    console.log({ res });
+    // console.log({ res });
     return res;
   } catch (error) {
     return error;
@@ -41,6 +41,15 @@ func.login = async (payload) => {
 func.profile = async () => {
   try {
     const res = await api.get("/profile");
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+func.getUsers = async () => {
+  try {
+    const res = await api.get("/users");
     return res;
   } catch (error) {
     return error;

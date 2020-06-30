@@ -1,31 +1,15 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import MainScreen from "../../screens/mainScreen";
-import Conversations from "../conversation";
-import Main from "./index";
+// import MainScreen from "../../screens/mainScreen";
+import Conversations from "./conversation";
+import Posts from "../../screens/main/home/posts";
+import Upload from "../../screens/main/upload/upload";
+// import Main from "./index";
 
 import constants from "../../constants";
-
-const viewStyle = ({ backgroundColor }) => ({
-  backgroundColor: backgroundColor || "tomato",
-  flex: 1,
-  alignItems: "center",
-  justifyContent: "center",
-});
-
-const ScreenOne = () => (
-  <View style={viewStyle({ backgroundColor: "tomato" })}>
-    <Text>Screen One</Text>
-  </View>
-);
-const ScreenTwo = () => (
-  <View style={viewStyle({ backgroundColor: "royalblue" })}>
-    <Text>Screen Two</Text>
-  </View>
-);
 
 const navOption = ({ label, icon, iconSize }) => ({
   tabBarLabel: label,
@@ -34,10 +18,28 @@ const navOption = ({ label, icon, iconSize }) => ({
       name={icon || "coffee"}
       color={color}
       size={iconSize || 35}
-      style={{ marginTop: 10 }}
+      style={{
+        marginTop:
+          Platform.OS === "ios" && constants.deviceInfo.hasNotch() ? 10 : 0,
+      }}
     />
   ),
 });
+
+const bottomNavStyle = {
+  backgroundColor: constants.colors.bottomNav,
+  padding: 5,
+  height: constants.screen.bottomNavHeight(),
+  borderTopWidth: 0,
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 8,
+  },
+  shadowOpacity: 0.46,
+  shadowRadius: 11.14,
+  elevation: 17,
+};
 
 const Tab = createBottomTabNavigator();
 
@@ -49,46 +51,30 @@ const BottomTabNavigator = (props) => {
         activeTintColor: constants.colors.username,
         inactiveTintColor: constants.colors.chatDate,
         showLabel: false,
-        labelStyle: {
-          fontSize: 11,
-          fontWeight: "bold",
-        },
-        style: {
-          backgroundColor: constants.colors.bottomNav,
-          padding: 5,
-          height: 80,
-          borderTopWidth: 0,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 8,
-          },
-          shadowOpacity: 0.46,
-          shadowRadius: 11.14,
-          elevation: 17,
-        },
+        labelStyle: { fontSize: 11, fontWeight: "bold" },
+        style: bottomNavStyle,
       }}
     >
       <Tab.Screen
-        name="One"
-        component={ScreenOne}
+        name="Posts"
+        component={Posts}
         options={navOption({ icon: "home-outline" })}
       />
       <Tab.Screen
-        name="Two"
-        component={ScreenTwo}
-        options={navOption({ icon: "calendar-blank-outline" })}
+        name="Upload"
+        component={Upload}
+        options={navOption({ icon: "plus-box-outline" })}
       />
       <Tab.Screen
         name="Conversations"
         component={Conversations}
         options={navOption({ icon: "message-text-outline" })}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="MainScreen"
         component={Main}
         options={navOption({ icon: "menu" })}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

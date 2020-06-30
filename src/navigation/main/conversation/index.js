@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Conversations from "../../screens/conversation/conversations";
-import Chat from "../../screens/conversation/chat";
+import Conversations from "../../../screens/main/conversation/conversations";
+import Chat from "../../../screens/main/conversation/chat";
 
 const viewStyle = ({ backgroundColor }) => ({
   backgroundColor: backgroundColor || "tomato",

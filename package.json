@@ -18,6 +18,7 @@
     "bcrypt": "^5.0.0",
     "config": "^3.3.1",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "expo": "^37.0.0",
     "expo-splash-screen": "^0.2.3",
     "expo-updates": "~0.2.1",
@@ -29,8 +30,11 @@
     "react": "16.9.0",
     "react-dom": "16.9.0",
     "react-native": "0.61.4",
+    "react-native-device-info": "^5.6.1",
     "react-native-easy-toast": "^1.2.0",
     "react-native-gesture-handler": "^1.6.1",
+    "react-native-image-picker": "^2.3.1",
+    "react-native-keyboard-spacer": "^0.4.1",
     "react-native-paper": "^3.10.1",
     "react-native-reanimated": "^1.7.1",
     "react-native-safe-area-context": "^0.7.3",
@@ -43,6 +47,8 @@
     "react-navigation-material-bottom-tabs": "^2.2.12",
     "react-navigation-stack": "^2.7.0",
     "react-navigation-tabs": "^2.8.13",
+    "recoil": "0.0.10",
+    "socket.io-client": "^2.3.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
