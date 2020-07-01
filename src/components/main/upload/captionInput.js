@@ -10,7 +10,7 @@ import {
 import constants from "../../../constants";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function MessageInput() {
+export default function MessageInput({ saveCaption }) {
   const [value, setValue] = useState("");
 
   return (
@@ -20,7 +20,9 @@ export default function MessageInput() {
         value={value}
         placeholder="Type something..."
         placeholderTextColor={constants.colors.chatDate}
-        onChangeText={(text) => text.length < 501 && setValue(text)}
+        onChangeText={(text) =>
+          text.length < 501 && (setValue(text), saveCaption(text))
+        }
         multiline={true}
       />
       <Text style={styles.charCount}>

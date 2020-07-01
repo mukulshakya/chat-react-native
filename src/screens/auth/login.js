@@ -5,9 +5,9 @@ import {
   Text,
   Alert,
   TouchableOpacity,
-  AsyncStorage,
 } from "react-native";
 import Toast from "react-native-easy-toast";
+import AsyncStorage from '@react-native-community/async-storage';
 
 import InputWithLabel from "../../components/auth/inputWithLabel";
 import API from "../../services/apiService";

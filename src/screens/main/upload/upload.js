@@ -1,60 +1,98 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
-  FlatList,
-  SafeAreaView,
   TouchableWithoutFeedback,
   Platform,
   Keyboard,
-  AsyncStorage,
   Image,
   TouchableOpacity,
   Text,
-} from "react-native";
-import ImagePicker from "react-native-image-picker";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import ImageResizer from "react-native-image-resizer";
+  Alert,
+} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import ImagePicker from 'react-native-image-picker';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ImageResizer from 'react-native-image-resizer';
+import {useRecoilState} from 'recoil';
+import {postListState} from '../../../recoil/atoms';
 
-import constants from "../../../constants";
-import API from "../../../services/apiService";
-// import Header from "../../../components/header";
-// import Post from "../../../components/main/home/post";
-import CaptionInput from "../../../components/main/upload/captionInput";
-import TopBarWithUsernameAndBack from "../../../components/main/chat/topBarWithUserNameAndBack";
+import constants from '../../../constants';
+import API from '../../../services/apiService';
+import CaptionInput from '../../../components/main/upload/captionInput';
+import TopBarWithUsernameAndBack from '../../../components/main/chat/topBarWithUserNameAndBack';
+import FullScreenLoader from '../../../components/fullScreenLoader';
 
-export default function Posts({ navigation, route }) {
-  const [imageSource, setImageSource] = useState({ uri: "", type: "" });
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+export default function Posts({navigation, route}) {
+  const [posts, setPosts] = useRecoilState(postListState);
+  const [imageSource, setImageSource] = useState({uri: '', type: ''});
+  const [payload, setPayload] = useState({
+    image: '',
+    caption: '',
+    fullImageResponse: '',
+  });
+  const [isPostReady, setIsPostReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const parent = navigation.dangerouslyGetParent();
-    parent.setOptions({ tabBarVisible: false });
-    return () => parent.setOptions({ tabBarVisible: true });
+    parent.setOptions({tabBarVisible: false});
+    return () => parent.setOptions({tabBarVisible: true});
   }, []);
+
+  const submitForm = async () => {
+    try {
+      setIsLoading(true);
+      const response = await API.uploadPost(payload);
+      if (response.status === 200) {
+        const {data, success} = response.data;
+        const user = await AsyncStorage.getItem('user');
+        success &&
+          setPosts((oldPosts) => [
+            {...data, user: JSON.parse(user)},
+            ...oldPosts,
+          ]);
+        setTimeout(() => {
+          setIsLoading(false);
+          navigation.goBack();
+          setImageSource({uri: '', type: ''});
+          setPayload({
+            image: '',
+            caption: '',
+            fullImageResponse: '',
+          });
+          setIsPostReady(false);
+        }, 1000);
+      }
+    } catch (e) {
+      Alert.alert('Error! please try again');
+      setIsLoading(false);
+      console.log('submit post error - ', e);
+    }
+  };
 
   const onPickImage = () => {
     ImagePicker.showImagePicker({}, (response) => {
       //   console.log({ response: response.type });
       if (response.didCancel) {
-        console.log("User cancelled image picker");
+        console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log("ImagePicker Error: ", response.error);
+        console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
-        console.log("User tapped custom button: ", response.customButton);
+        console.log('User tapped custom button: ', response.customButton);
       } else {
-        const { uri, type } = response;
-        setImageSource({ uri, type });
+        const {uri, type} = response;
+        console.log({type});
+        setImageSource({uri, type});
         compressImage(uri);
       }
     });
   };
 
   const compressImage = async (imageUri) => {
-    console.log(imageUri);
     const newWidth = 896;
     const newHeight = 414;
-    const compressFormat = "JPEG";
+    const compressFormat = 'JPEG';
     const quality = 80;
     try {
       const response = await ImageResizer.createResizedImage(
@@ -62,91 +100,108 @@ export default function Posts({ navigation, route }) {
         newWidth,
         newHeight,
         compressFormat,
-        quality
+        quality,
       );
       uploadImage(response);
     } catch (e) {
-      console.log("Image compression error - ", e);
+      console.log('Image compression error - ', e);
     }
   };
 
-  const uploadImage = async ({ uri, name }) => {
+  const uploadImage = async ({uri, name, path}) => {
     try {
       const response = await API.uploadImage({
-        uri,
+        uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
         type: imageSource.type,
         name,
+        path,
       });
+      if (response.status === 200) {
+        const {data, success} = response.data;
+        if (success) {
+          payload.image = data.link;
+          payload.fullImageResponse = JSON.stringify(data);
+          setPayload(payload);
+          setIsPostReady(true);
+        }
+      }
     } catch (e) {
-      console.log("Upload image - ", e);
+      console.log('Upload image - ', e);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <TopBarWithUsernameAndBack
-        navigation={navigation}
-        username="New Post"
-        fromUpload
-      />
-      <View style={{ paddingHorizontal: "5%" }}>
-        <View style={styles.imagePicker}>
-          <TouchableOpacity
-            onPress={onPickImage}
-            style={[imageSource.uri && styles.postImg]}
-          >
-            {imageSource.uri ? (
-              <View>
-                <Image source={imageSource} style={styles.postImg} />
-                <Text
-                  style={styles.closeIcon}
-                  onPress={() => setImageSource({ uri: "" })}
-                >
-                  ✕
-                </Text>
-              </View>
-            ) : (
-              <MaterialCommunityIcons
-                name="plus"
-                color={constants.colors.username}
-                size={60}
-              />
-            )}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.captionInputWrapper}>
-          <CaptionInput navigation={navigation} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        {isLoading && <FullScreenLoader />}
+        <TopBarWithUsernameAndBack
+          navigation={navigation}
+          username="New Post"
+          sharePost={submitForm}
+          isPostReady={isPostReady}
+          fromUpload
+        />
+
+        <View style={{paddingHorizontal: '5%'}}>
+          <View style={styles.imagePicker}>
+            {!!imageSource.uri && !isPostReady && <FullScreenLoader />}
+            <TouchableOpacity
+              onPress={onPickImage}
+              style={[imageSource.uri && styles.postImg]}>
+              {imageSource.uri ? (
+                <View>
+                  <Image source={imageSource} style={styles.postImg} />
+                  <Text
+                    style={styles.closeIcon}
+                    onPress={() => setImageSource({uri: ''})}>
+                    ✕
+                  </Text>
+                </View>
+              ) : (
+                <MaterialCommunityIcons
+                  name="plus"
+                  color={constants.colors.username}
+                  size={60}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.captionInputWrapper}>
+            <CaptionInput
+              navigation={navigation}
+              saveCaption={(value) => {
+                payload.caption = value;
+                setPayload(payload);
+              }}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
-/**
-{"uri": "file:///Users/mukulshakya/Library/Developer/CoreSimulator/Devices/1A4D5296-3FEC-46BD-A53E-81B7F7E4351A/data/Containers/Data/Application/499BE6AB-8CC3-44D9-AEE5-3DFD1ED040FC/Documents/images/67B076F8-0343-419E-8001-A99DB81364F8.jpg"}
- */
-
 const styles = StyleSheet.create({
-  container: { backgroundColor: constants.colors.chatBg, flex: 1 },
+  container: {backgroundColor: constants.colors.chatBg, flex: 1},
   innerContainer: {},
-  postImg: { width: "100%", height: constants.screen.height / 4 },
+  postImg: {width: '100%', height: constants.screen.height / 4},
   imagePicker: {
-    width: "100%",
+    width: '100%',
     height: constants.screen.height / 4,
     backgroundColor: constants.colors.bottomNav,
-    borderColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
+    borderColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  captionInputWrapper: { marginTop: 20 },
+  captionInputWrapper: {marginTop: 20},
   closeIcon: {
-    position: "absolute",
+    position: 'absolute',
     top: 5,
     right: 5,
     fontSize: 25,
-    fontWeight: "900",
-    textShadowOffset: { height: 2 },
-    textShadowColor: "#fff",
+    fontWeight: '900',
+    textShadowOffset: {height: 2},
+    textShadowColor: '#fff',
     textShadowRadius: 2,
   },
 });

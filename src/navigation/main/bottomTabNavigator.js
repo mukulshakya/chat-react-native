@@ -46,7 +46,7 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigator = (props) => {
   return (
     <Tab.Navigator
-      initialRouteName="Conversations"
+      initialRouteName="Posts"
       tabBarOptions={{
         activeTintColor: constants.colors.username,
         inactiveTintColor: constants.colors.chatDate,

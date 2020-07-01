@@ -3,20 +3,23 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import constants from "../../../constants";
 
-export default function Post({ title }) {
+export default function Post({ data: { user, image, caption, noOfLikes } }) {
   const [expanded, setExpanded] = useState(false);
-  const randomCaption = `gshghjgfjhgsfhjgsfhgsfhsfgshghjgfjhgsfhjgsfhgsfhsfgshghjgfjhgsfhjgsfhgsfhsfgshghjgfjhgsfhjgsfhgsfhsfgshghjgfjhgsfhjgsfhgsfhsfgshghjgfjhgsfhjgsfhgsfhsfgshghjgfjhgsfhjgsfhgsfhsfgshghjgfjhgsfhjgsfhgsfhsfgshghjgfjhgsfhjgsfhgsfhsf`;
 
-  const renderCaption = () => {
+  const renderCaption = (caption) => {
     return (
       <Text style={styles.caption}>
-        {expanded ? randomCaption : randomCaption.substr(0, 100) + "... "}
-        <Text
-          style={{ color: constants.colors.chatDate }}
-          onPress={() => setExpanded(!expanded)}
-        >
-          {expanded ? " less" : "more"}
-        </Text>
+        {expanded || caption.length < 101
+          ? caption
+          : caption.substr(0, 100) + "... "}
+        {caption.length > 100 && (
+          <Text
+            style={{ color: constants.colors.chatDate }}
+            onPress={() => setExpanded(!expanded)}
+          >
+            {expanded ? " less" : "more"}
+          </Text>
+        )}
       </Text>
     );
   };
@@ -25,16 +28,13 @@ export default function Post({ title }) {
     <View style={styles.container}>
       <View style={styles.userDetails}>
         <Image
-          source={{ uri: constants.dummy.images.user }}
+          source={{ uri: user.profileImg || constants.dummy.images.user }}
           style={styles.userImg}
         />
-        <Text style={styles.userName}>Username</Text>
+        <Text style={styles.userName}>{user.username}</Text>
       </View>
       <View>
-        <Image
-          source={{ uri: constants.dummy.images.post }}
-          style={styles.postImg}
-        />
+        <Image source={{ uri: image }} style={styles.postImg} />
       </View>
       <View style={styles.activity}>
         <View style={styles.likeComment}>
@@ -67,7 +67,11 @@ export default function Post({ title }) {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.captionWrapper}>{renderCaption()}</View>
+      {!!caption && (
+        <View style={styles.captionWrapper}>
+          <Text style={styles.caption}>{renderCaption(caption)}</Text>
+        </View>
+      )}
     </View>
   );
 }

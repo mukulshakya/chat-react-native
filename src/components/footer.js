@@ -6,8 +6,8 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-  AsyncStorage,
 } from "react-native";
+import AsyncStorage from '@react-native-community/async-storage';
 
 const screenWidth = Math.round(Dimensions.get("window").width);
 

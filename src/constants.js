@@ -3,6 +3,8 @@ import DeviceInfo from "react-native-device-info";
 
 const isNotchPhone = DeviceInfo.hasNotch();
 const iphoneNotch = Platform.OS === "ios" && isNotchPhone;
+const screenHeight = Math.round(Dimensions.get("window").height);
+const screenWidth = Math.round(Dimensions.get("window").width);
 
 export default {
   colors: {
@@ -14,12 +16,10 @@ export default {
     username: "#ffffff",
   },
   screen: {
-    height: Math.round(Dimensions.get("window").height),
-    width: Math.round(Dimensions.get("window").width),
+    height: screenHeight,
+    width: screenWidth,
     iphoneNotchBottomNavHeight: 80,
-    bottomNavHeight() {
-      return iphoneNotch ? 80 : 60;
-    },
+    bottomNavHeight: () => (iphoneNotch ? 80 : 60),
     postFlatlistHeight() {
       const bottomNavHeight = iphoneNotch ? 80 : 60;
       const topBarHeight = isNotchPhone ? 80 : 55;
@@ -28,9 +28,7 @@ export default {
         (bottomNavHeight + topBarHeight)
       );
     },
-    randomString() {
-      return Math.random().toString(36).split(".")[1];
-    },
+    randomString: () => Math.random().toString(36).split(".")[1],
   },
   apiUrl: {
     local: "http://localhost:8000",
@@ -45,4 +43,15 @@ export default {
     },
   },
   imgur: { clientId: "1f3e35f19556430" },
+  styles: {
+    loadingView: {
+      position: "absolute",
+      zIndex: 99,
+      height: screenHeight,
+      width: screenWidth,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.6)",
+    },
+  },
 };

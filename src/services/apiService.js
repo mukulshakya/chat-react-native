@@ -1,28 +1,35 @@
-import axios from "axios";
-import { AsyncStorage } from "react-native";
-import constants from "../constants";
+import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
+import constants from '../constants';
 
-const api = axios.create({ baseURL: constants.apiUrl.local });
+const api = axios.create({baseURL: constants.apiUrl.live});
 
 api.interceptors.request.use(
   async function (config) {
-    const token = await AsyncStorage.getItem("token");
-    if (token) return { ...config, headers: { Authorization: token } };
+    const token = await AsyncStorage.getItem('token');
+    if (token) return {...config, headers: {Authorization: token}};
     return config;
   },
   function (error) {
     // Do something with request error
     return Promise.reject(error);
-  }
+  },
 );
+
+// const token = "";
+// AsyncStorage.getItem("token").then((token) => (token = token));
+// const api = axios.create({
+//   baseURL: constants.apiUrl.local,
+//   headers: { Authorization: token },
+// });
 
 const func = {};
 
 func.register = async (payload) => {
   try {
     // console.log({ payload });
-    const res = await api.post("/register", payload);
-    // console.log({ res });
+    const res = await api.post('/register', payload);
+    console.log({ res });
     return res;
   } catch (error) {
     return error;
@@ -31,7 +38,8 @@ func.register = async (payload) => {
 
 func.login = async (payload) => {
   try {
-    const res = await api.post("/login", payload);
+    const res = await api.post('/login', payload);
+    console.log({res});
     return res;
   } catch (error) {
     return error;
@@ -40,7 +48,7 @@ func.login = async (payload) => {
 
 func.profile = async () => {
   try {
-    const res = await api.get("/profile");
+    const res = await api.get('/profile');
     return res;
   } catch (error) {
     return error;
@@ -49,16 +57,16 @@ func.profile = async () => {
 
 func.getUsers = async () => {
   try {
-    const res = await api.get("/users");
+    const res = await api.get('/users');
     return res;
   } catch (error) {
     return error;
   }
 };
 
-func.getPosts = async () => {
+func.getPosts = async (params) => {
   try {
-    const res = await api.get("/posts");
+    const res = await api.get('/posts', {params});
     return res;
   } catch (error) {
     return error;
@@ -67,34 +75,34 @@ func.getPosts = async () => {
 
 func.uploadPost = async (payload) => {
   try {
-    const res = await api.post("/posts", payload);
+    const res = await api.post('/posts', payload);
     return res;
   } catch (error) {
     return error;
   }
 };
 
-func.uploadImage = async ({ uri, type, name }) => {
+func.uploadImage = async ({uri, type, name}) => {
   try {
-    console.log({ uri, type, name });
     const formData = new FormData();
-    formData.append("image", {
+    formData.append('image', {
       uri,
-      type: type || "image/jpeg",
-      name: name || Math.random().toString(36).split(".")[1] + ".jpg",
+      type: type || 'image/jpeg',
+      name: name || Math.random().toString(36).split('.')[1] + '.jpg',
     });
 
     const res = await axios({
-      url: "https://api.imgur.com/3/upload",
+      method: 'POST',
+      url: 'https://api.imgur.com/3/upload',
       headers: {
-        Authorization: "Client-ID " + constants.imgur.clientId,
-        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: 'Client-ID ' + constants.imgur.clientId,
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: formData,
     });
-    console.log({ res });
     return res;
   } catch (error) {
+    console.log({error});
     return error;
   }
 };

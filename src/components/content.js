@@ -27,6 +27,7 @@ export default function Body(props) {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 200,
+      useNativeDriver: true
     }).start();
   };
 
@@ -34,6 +35,7 @@ export default function Body(props) {
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 200,
+      useNativeDriver: true
     }).start(() => setShowUserDetails(false));
   };
 

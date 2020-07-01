@@ -5,6 +5,11 @@ export const userListState = atom({
   default: [],
 });
 
+export const postListState = atom({
+  key: "postListState",
+  default: [],
+});
+
 export const todoListFilterState = atom({
   key: "todoListFilterState",
   default: "Show All",

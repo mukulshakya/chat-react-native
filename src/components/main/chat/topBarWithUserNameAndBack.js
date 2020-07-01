@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 import constants from "../../../constants";
@@ -8,6 +8,8 @@ export default function TopBarWithUsernameAndBack({
   navigation,
   username,
   fromUpload,
+  sharePost,
+  isPostReady,
 }) {
   return (
     <View style={styles.header}>
@@ -24,12 +26,26 @@ export default function TopBarWithUsernameAndBack({
       </TouchableOpacity>
       <Text style={styles.username}>{username}</Text>
       <TouchableOpacity
+        disabled={fromUpload ? !isPostReady : false}
         style={[styles.icon, fromUpload && { marginTop: 18, marginRight: 5 }]}
         activeOpacity={0.7}
-        onPress={() => navigation.navigate("Three")}
+        onPress={() => {
+          fromUpload ? sharePost() : navigation.navigate("Three");
+        }}
       >
         {fromUpload ? (
-          <Text style={styles.shareText}>Share</Text>
+          <Text
+            style={[
+              styles.shareText,
+              {
+                color: isPostReady
+                  ? constants.colors.msgSent
+                  : constants.colors.chatDate,
+              },
+            ]}
+          >
+            Share
+          </Text>
         ) : (
           <MaterialCommunityIcons
             name="dots-vertical"
@@ -51,5 +67,5 @@ const styles = StyleSheet.create({
   },
   icon: { marginTop: 10 },
   username: { fontSize: 20, lineHeight: 60, color: constants.colors.username },
-  shareText: { fontSize: 20, color: constants.colors.msgSent },
+  shareText: { fontSize: 20 },
 });
