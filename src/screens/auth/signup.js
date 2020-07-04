@@ -52,8 +52,9 @@ export default function Login() {
   const submitForm = async () => {
     try {
       const response = await API.register(payload);
-      const { message, success, data } = response.data;
+      console.log({response})
       if (response.status === 200) {
+        const { message, success, data } = response.data;
         setIsSubmit(true);
         setIsSubmit(false);
         const emptyPayload = {};

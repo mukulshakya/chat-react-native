@@ -1,14 +1,22 @@
-import React, { useState } from "react";
-import { StyleSheet, View, TextInput } from "react-native";
+import React from 'react';
+import {useRecoilState} from 'recoil';
+import {userSearchFilter} from '../../../recoil/atoms';
+import {StyleSheet, View, TextInput} from 'react-native';
 
-import constants from "../../../constants";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import constants from '../../../constants';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function SearchBar() {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useRecoilState(userSearchFilter);
 
   return (
     <View style={styles.container}>
+      <MaterialCommunityIcons
+        name={'magnify'}
+        color={constants.colors.chatDate}
+        size={24}
+        style={styles.icon}
+      />
       <TextInput
         style={styles.input}
         value={value}
@@ -16,31 +24,25 @@ export default function SearchBar() {
         placeholderTextColor={constants.colors.chatDate}
         onChangeText={(text) => setValue(text)}
       />
-      <MaterialCommunityIcons
-        name={"magnify"}
-        color={constants.colors.chatDate}
-        size={24}
-        style={styles.checkValue}
-      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { alignItems: "center", paddingBottom: 18 },
-  input: {
-    height: 50,
-    borderWidth: 0.2,
-    borderRadius: 8,
-    paddingLeft: 41,
-    paddingRight: 10,
-    width: "100%",
+  container: {
+    alignItems: 'center',
+    marginBottom: 18,
+    width: constants.screen.width - 40,
+    flexDirection: 'row',
     backgroundColor: constants.colors.bottomNav,
+    borderWidth: 0.2,
+    borderRadius: 6,
+    justifyContent: 'center',
   },
-  checkValue: {
-    position: "absolute",
-    left: 10,
-    top: 13,
-    color: constants.colors.chatDate,
+  input: {
+    paddingHorizontal: 10,
+    paddingVertical: 13,
+    flex: 1,
   },
+  icon: {paddingLeft: 10, marginTop: 2},
 });

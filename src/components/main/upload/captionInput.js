@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
   TextInput,
   TouchableOpacity,
   Text,
-} from "react-native";
+} from 'react-native';
 
-import constants from "../../../constants";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import constants from '../../../constants';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function MessageInput({ saveCaption }) {
-  const [value, setValue] = useState("");
+export default function MessageInput({saveCaption, isClear}) {
+  const [value, setValue] = useState('');
+
+  useEffect(() => {
+    setValue('');
+  }, [isClear]);
 
   return (
     <View style={styles.container}>
@@ -27,7 +31,7 @@ export default function MessageInput({ saveCaption }) {
       />
       <Text style={styles.charCount}>
         (
-        <Text style={[value.length !== 500 && { color: "#fff" }]}>
+        <Text style={[value.length !== 500 && {color: '#fff'}]}>
           {value.trim().length}
         </Text>
         /500)
@@ -37,17 +41,17 @@ export default function MessageInput({ saveCaption }) {
 }
 
 const styles = StyleSheet.create({
-  container: { width: "100%", alignItems: "center" },
+  container: {width: '100%', alignItems: 'center'},
   input: {
     borderWidth: 0.2,
     padding: 10,
-    width: "100%",
+    width: '100%',
     backgroundColor: constants.colors.bottomNav,
     color: constants.colors.username,
     height: constants.screen.height / 7,
   },
   charCount: {
-    position: "absolute",
+    position: 'absolute',
     right: 2,
     top: constants.screen.height / 7 - 20,
     color: constants.colors.msgSent,

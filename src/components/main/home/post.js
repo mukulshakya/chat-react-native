@@ -77,7 +77,7 @@ export default function Post({ data: { user, image, caption, noOfLikes } }) {
 }
 
 const styles = StyleSheet.create({
-  container: { paddingVertical: 10 },
+  container: { paddingBottom: 10 },
   userDetails: {
     flexDirection: "row",
     alignItems: "center",

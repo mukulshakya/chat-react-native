@@ -58,10 +58,11 @@ export default function TopBarWithUsernameAndBack({
   );
 }
 
+const {isIos, hasNotch} = constants.screen;
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    paddingTop: constants.deviceInfo.hasNotch() ? 45 : 15,
+    paddingTop: isIos ? (hasNotch ? 30 : 10) : hasNotch ? 30 : 0,
     marginLeft: 10,
     justifyContent: "space-between",
   },

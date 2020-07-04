@@ -3,10 +3,10 @@ import {
   StyleSheet,
   View,
   FlatList,
-  SafeAreaView,
   TouchableWithoutFeedback,
   Platform,
   Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -17,16 +17,22 @@ import MessageInput from '../../../components/main/chat/msgInput';
 import ReceivedMessage from '../../../components/main/chat/receivedMsg';
 import SentMessage from '../../../components/main/chat/sentMsg';
 
+const {isIos, hasNotch} = constants.screen;
 export default function Chat({navigation, route}) {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   console.log({route});
 
   const onKeyboardWillShow = (e) => {
-    setKeyboardHeight(
-      e.endCoordinates.height -
-        (Platform.OS === 'ios' && constants.deviceInfo.hasNotch() ? 20 : 0),
+    console.log(
+      'show',
+      constants.screen.height -
+        (isIos ? (hasNotch ? 190 : 150) : hasNotch ? 170 : 100) -
+        e.endCoordinates.height,
     );
+    const height =
+      e.endCoordinates.height + Platform.OS === 'android' ? 200 : 0;
+    setKeyboardHeight(height);
   };
 
   const onKeyboardWillHide = () => {
@@ -39,6 +45,9 @@ export default function Chat({navigation, route}) {
     if (Platform.OS === 'ios') {
       Keyboard.addListener('keyboardWillShow', onKeyboardWillShow);
       Keyboard.addListener('keyboardWillHide', onKeyboardWillHide);
+    } else {
+      Keyboard.addListener('keyboardDidShow', onKeyboardWillShow);
+      Keyboard.addListener('keyboardDidHide', onKeyboardWillHide);
     }
 
     const socket = io(constants.apiUrl.local);
@@ -49,6 +58,9 @@ export default function Chat({navigation, route}) {
       if (Platform.OS === 'ios') {
         Keyboard.removeListener('keyboardWillShow', onKeyboardWillShow);
         Keyboard.removeListener('keyboardWillHide', onKeyboardWillHide);
+      } else {
+        Keyboard.removeListener('keyboardDidShow', onKeyboardWillShow);
+        Keyboard.removeListener('keyboardDidHide', onKeyboardWillHide);
       }
       return parent.setOptions({tabBarVisible: true});
     };
@@ -84,46 +96,29 @@ export default function Chat({navigation, route}) {
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.innerContainer}>
-          <View style={styles.topbar}>
-            <TopBarWithUsernameAndBack
-              navigation={navigation}
-              username={route.params?.username ?? 'username'}
-            />
-          </View>
-
-          <SafeAreaView
-            style={{
-              height:
-                constants.screen.height -
-                (Platform.OS === 'ios' && constants.deviceInfo.hasNotch()
-                  ? 200
-                  : 150) -
-                keyboardHeight,
-            }}>
-            <FlatList
-              inverted
-              data={Array(30)
-                .fill()
-                .map((e, i) => i)}
-              renderItem={({index}) =>
-                index % 2 ? (
-                  <ReceivedMessage message={generateRandomMsg()} />
-                ) : (
-                  <SentMessage message={generateRandomMsg()} />
-                )
-              }
-              keyExtractor={(index) => index + ''}
-              styles={{overflow: 'none'}}
-            />
-          </SafeAreaView>
-
-          {/* <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
-          > */}
-          <View style={styles.msgInput}>
+          <TopBarWithUsernameAndBack
+            navigation={navigation}
+            username={route.params?.username ?? 'username'}
+          />
+          <FlatList
+            inverted
+            data={Array(30)
+              .fill()
+              .map((e, i) => i)}
+            renderItem={({index}) =>
+              index % 2 ? (
+                <ReceivedMessage message={generateRandomMsg()} />
+              ) : (
+                <SentMessage message={generateRandomMsg()} />
+              )
+            }
+            keyExtractor={(index) => index + ''}
+            styles={{overflow: 'none'}}
+          />
+          <KeyboardAvoidingView
+            behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
             <MessageInput navigation={navigation} />
-          </View>
-          {/* </KeyboardAvoidingView> */}
+          </KeyboardAvoidingView>
         </View>
       </TouchableWithoutFeedback>
     </View>
@@ -131,10 +126,11 @@ export default function Chat({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
-  container: {height: '100%', backgroundColor: constants.colors.chatBg},
+  container: {flex: 1, backgroundColor: constants.colors.chatBg},
   innerContainer: {
     flex: 1,
     flexDirection: 'column',
     marginLeft: 10,
   },
+  // msgInput: {position: 'absolute', top: constants.screen.height - 80},
 });

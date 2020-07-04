@@ -1,16 +1,21 @@
-import { atom } from "recoil";
+import {atom} from 'recoil';
 
 export const userListState = atom({
-  key: "userListState",
+  key: 'userListState',
   default: [],
 });
 
 export const postListState = atom({
-  key: "postListState",
+  key: 'postListState',
   default: [],
 });
 
-export const todoListFilterState = atom({
-  key: "todoListFilterState",
-  default: "Show All",
+export const userSearchFilter = atom({
+  key: 'userSearchFilter',
+  default: '',
+});
+
+export const currentUser = atom({
+  key: 'currentUser',
+  default: null,
 });

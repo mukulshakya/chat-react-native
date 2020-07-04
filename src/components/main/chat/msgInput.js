@@ -1,30 +1,34 @@
-import React, { useState } from "react";
-import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
+import React, {useState} from 'react';
+import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 
-import constants from "../../../constants";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import constants from '../../../constants';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const {
+  screen: {isIos, hasNotch},
+  colors: {msgSent, chatDate, username, bottomNav},
+} = constants;
 
 export default function MessageInput() {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
 
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, isIos && styles.inputIos]}
         value={value}
         placeholder="Type something..."
-        placeholderTextColor={constants.colors.chatDate}
+        placeholderTextColor={chatDate}
         onChangeText={(text) => setValue(text)}
         multiline={true}
       />
       <TouchableOpacity
         disabled={!value}
-        style={styles.icon}
-        activeOpacity={0.7}
-      >
+        style={[styles.icon, isIos && styles.iconIos]}
+        activeOpacity={0.7}>
         <MaterialCommunityIcons
-          name={"send-circle"}
-          color={value ? constants.colors.msgSent : constants.colors.chatDate}
+          name={'send-circle'}
+          color={value ? msgSent : chatDate}
           size={35}
         />
       </TouchableOpacity>
@@ -34,27 +38,17 @@ export default function MessageInput() {
 
 const styles = StyleSheet.create({
   container: {
-    height: 200,
+    alignItems: 'center',
     width: constants.screen.width - 20,
-    alignItems: "center",
-    paddingVertical: 18,
-  },
-  input: {
+    marginTop: 10,
+    marginBottom: isIos && hasNotch ? 15 : 10,
+    flexDirection: 'row',
+    backgroundColor: bottomNav,
     borderWidth: 0.2,
-    borderRadius: 8,
-    paddingRight: 45,
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingLeft: 15,
-    width: "100%",
-    backgroundColor: constants.colors.bottomNav,
-    color: constants.colors.username,
-    maxHeight: 100,
+    borderRadius: 7,
   },
-  icon: {
-    position: "absolute",
-    right: 10,
-    top: 24,
-    color: constants.colors.msgSent,
-  },
+  input: {paddingHorizontal: 10, width: '90%', color: username, maxHeight: 100},
+  inputIos: {marginTop: 5, marginBottom: 10},
+  icon: {right: 8, color: msgSent},
+  iconIos: {top: 1, right: hasNotch ? 0 : 5},
 });

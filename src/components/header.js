@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Platform} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import constants from '../constants';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -7,7 +7,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 export default function Header({title, navigation}) {
   return (
     <View style={styles.header}>
-      <Text style={styles.headerTitle}>{title || 'Chat App'}</Text>
+      <Text style={{...styles.headerTitle, fontSize: 25}}>
+        {title || 'Chat App'}
+      </Text>
       <TouchableOpacity
         style={styles.icon}
         activeOpacity={0.7}
@@ -18,12 +20,14 @@ export default function Header({title, navigation}) {
         <MaterialCommunityIcons
           name="logout-variant"
           color={constants.colors.username}
-          size={35}
+          size={30}
         />
       </TouchableOpacity>
     </View>
   );
 }
+
+const {isIos, hasNotch} = constants.screen;
 
 const styles = StyleSheet.create({
   header: {
@@ -33,19 +37,20 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 3},
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    // elevation: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   headerTitle: {
     textAlign: 'center',
-    // position: "relative",
-    top: constants.deviceInfo.hasNotch() ? 45 : 23,
-    fontSize: 25,
+    top: isIos ? (hasNotch ? 20 : 10) : hasNotch ? 30 : 0,
     fontWeight: 'bold',
     color: '#F8F8F5',
+    flex: 1,
   },
   icon: {
-    marginTop: 15,
-    position: 'relative',
-    left: constants.screen.width - 50,
+    flex: 1,
+    top: isIos ? (hasNotch ? 45 : 23) : hasNotch ? 30 : 15,
+    position: 'absolute',
+    left: constants.screen.width - 40,
   },
 });

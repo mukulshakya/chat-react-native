@@ -9,7 +9,9 @@ import {
   TouchableOpacity,
   Text,
   Alert,
+  PermissionsAndroid,
 } from 'react-native';
+import {request, PERMISSIONS} from 'react-native-permissions';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -33,6 +35,7 @@ export default function Posts({navigation, route}) {
   });
   const [isPostReady, setIsPostReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [clearCaption, setClearCaption] = useState(false);
 
   useEffect(() => {
     const parent = navigation.dangerouslyGetParent();
@@ -62,12 +65,30 @@ export default function Posts({navigation, route}) {
             fullImageResponse: '',
           });
           setIsPostReady(false);
+          setClearCaption(true);
         }, 1000);
       }
     } catch (e) {
       Alert.alert('Error! please try again');
       setIsLoading(false);
       console.log('submit post error - ', e);
+    }
+  };
+
+  const askStoragePermission = async () => {
+    console.log('ok');
+    try {
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA, {
+        title: 'Cool Photo App Camera Permission',
+        message:
+          'Cool Photo App needs access to your camera ' +
+          'so you can take awesome pictures.',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      });
+    } catch (e) {
+      console.log({e});
     }
   };
 
@@ -78,6 +99,15 @@ export default function Posts({navigation, route}) {
         console.log('User cancelled image picker');
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
+        if (
+          response.error === "Permissions weren't granted" &&
+          Platform.OS === 'android'
+        ) {
+          console.log('hello');
+          request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE).then((result) => {
+            console.log({result});
+          });
+        }
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
@@ -173,6 +203,7 @@ export default function Posts({navigation, route}) {
                 payload.caption = value;
                 setPayload(payload);
               }}
+              isClear={clearCaption}
             />
           </View>
         </View>

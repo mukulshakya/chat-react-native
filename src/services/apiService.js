@@ -29,7 +29,7 @@ func.register = async (payload) => {
   try {
     // console.log({ payload });
     const res = await api.post('/register', payload);
-    console.log({ res });
+    console.log({res});
     return res;
   } catch (error) {
     return error;
@@ -38,10 +38,12 @@ func.register = async (payload) => {
 
 func.login = async (payload) => {
   try {
+    console.log({payload});
     const res = await api.post('/login', payload);
     console.log({res});
     return res;
   } catch (error) {
+    console.log(JSON.stringify(error));
     return error;
   }
 };
