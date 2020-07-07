@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Text,
   Alert,
-  PermissionsAndroid,
 } from 'react-native';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -72,23 +71,6 @@ export default function Posts({navigation, route}) {
       Alert.alert('Error! please try again');
       setIsLoading(false);
       console.log('submit post error - ', e);
-    }
-  };
-
-  const askStoragePermission = async () => {
-    console.log('ok');
-    try {
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA, {
-        title: 'Cool Photo App Camera Permission',
-        message:
-          'Cool Photo App needs access to your camera ' +
-          'so you can take awesome pictures.',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      });
-    } catch (e) {
-      console.log({e});
     }
   };
 
@@ -157,6 +139,9 @@ export default function Posts({navigation, route}) {
       }
     } catch (e) {
       console.log('Upload image - ', e);
+      setIsLoading(false);
+      setImageSource({uri: '', type: ''});
+      clearCaption(true);
     }
   };
 
@@ -183,7 +168,10 @@ export default function Posts({navigation, route}) {
                   <Image source={imageSource} style={styles.postImg} />
                   <Text
                     style={styles.closeIcon}
-                    onPress={() => setImageSource({uri: ''})}>
+                    onPress={() => {
+                      setImageSource({uri: ''});
+                      setIsPostReady(false);
+                    }}>
                     ✕
                   </Text>
                 </View>
@@ -227,8 +215,8 @@ const styles = StyleSheet.create({
   captionInputWrapper: {marginTop: 20},
   closeIcon: {
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: constants.screen.isIos ? 5 : 0,
+    right: 7,
     fontSize: 25,
     fontWeight: '900',
     textShadowOffset: {height: 2},

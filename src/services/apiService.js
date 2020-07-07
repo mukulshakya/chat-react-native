@@ -1,6 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import constants from '../constants';
+import {Platform} from 'react-native';
 
 const api = axios.create({baseURL: constants.apiUrl.live});
 
@@ -89,7 +90,7 @@ func.uploadImage = async ({uri, type, name}) => {
     const formData = new FormData();
     formData.append('image', {
       uri,
-      type: type || 'image/jpeg',
+      type: 'image/jpeg',
       name: name || Math.random().toString(36).split('.')[1] + '.jpg',
     });
 
@@ -102,6 +103,29 @@ func.uploadImage = async ({uri, type, name}) => {
       },
       data: formData,
     });
+    return res;
+  } catch (error) {
+    console.log({error});
+    return error;
+  }
+};
+
+func.searchSong = async (keyword) => {
+  try {
+    const search = String(keyword).trim().replace(/ +/g, '+');
+    const res = await axios.get('https://jiosaavn.ga/api/?query=' + search);
+    return res;
+  } catch (error) {
+    console.log({error});
+    return error;
+  }
+};
+
+func.getSongDetail = async (url) => {
+  try {
+    const res = await axios.get(
+      'https://jiosaavn.netlify.app/api/?query=' + url,
+    );
     return res;
   } catch (error) {
     console.log({error});

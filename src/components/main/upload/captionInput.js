@@ -41,19 +41,16 @@ export default function MessageInput({saveCaption, isClear}) {
 }
 
 const styles = StyleSheet.create({
-  container: {width: '100%', alignItems: 'center'},
+  container: {padding: 10, backgroundColor: constants.colors.bottomNav},
   input: {
     borderWidth: 0.2,
-    padding: 10,
-    width: '100%',
-    backgroundColor: constants.colors.bottomNav,
     color: constants.colors.username,
     height: constants.screen.height / 7,
   },
   charCount: {
     position: 'absolute',
     right: 2,
-    top: constants.screen.height / 7 - 20,
+    top: constants.screen.height / 7,
     color: constants.colors.msgSent,
   },
 });

@@ -14,6 +14,7 @@
     "@react-native-community/cli-platform-android": "^4.10.1",
     "@react-native-community/cli-platform-ios": "^4.10.1",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/toolbar-android": "0.1.0-rc.2",
     "@react-navigation/bottom-tabs": "^5.6.1",
     "@react-navigation/material-bottom-tabs": "^5.2.12",
     "@react-navigation/material-top-tabs": "^5.2.12",
@@ -23,7 +24,7 @@
     "crypto": "^1.0.1",
     "hermesvm": "^0.1.1",
     "jsc-android": "^241213.1.0",
-    "react": "16.11.0",
+    "react": "^16.11.0",
     "react-dom": "^16.13.1",
     "react-native": "0.62.2",
     "react-native-device-info": "^5.6.1",
@@ -31,11 +32,14 @@
     "react-native-gesture-handler": "^1.6.1",
     "react-native-image-picker": "^2.3.1",
     "react-native-image-resizer": "^1.2.3",
+    "react-native-paper": "^3.10.1",
     "react-native-permissions": "^2.1.5",
     "react-native-reanimated": "^1.9.0",
     "react-native-safe-area-context": "^3.0.7",
     "react-native-screens": "^2.9.0",
+    "react-native-swift": "^1.2.3",
     "react-native-tab-view": "^2.14.4",
+    "react-native-track-player": "^1.2.3",
     "react-native-vector-icons": "^6.6.0",
     "recoil": "0.0.10",
     "socket.io-client": "^2.3.0"
@@ -52,5 +56,6 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "isSwift": true
 }

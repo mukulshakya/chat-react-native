@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* chatReactNative2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* chatReactNative2Tests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -20,6 +19,7 @@
 		31F6D88D0C578A000B8FAE98 /* libPods-chatReactNative2-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 674C381CCD415F49261E2463 /* libPods-chatReactNative2-tvOSTests.a */; };
 		A9F915922BCA09CB206D5F0F /* libPods-chatReactNative2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EDE11C26370278BC9FBC67E5 /* libPods-chatReactNative2.a */; };
 		DBBCEA02C5AB22318D69640A /* libPods-chatReactNative2-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BAF21481F21546324DEFBD47 /* libPods-chatReactNative2-tvOS.a */; };
+		B339592D0ACB4AFC9979BB4B /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E55B6F26A02A434BAFDBB46E /* RNPlaceholder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +83,7 @@
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		EDE11C26370278BC9FBC67E5 /* libPods-chatReactNative2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-chatReactNative2.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC4CC6C40BB8EE5BD2DA7476 /* Pods-chatReactNative2-chatReactNative2Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chatReactNative2-chatReactNative2Tests.debug.xcconfig"; path = "Target Support Files/Pods-chatReactNative2-chatReactNative2Tests/Pods-chatReactNative2-chatReactNative2Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		E55B6F26A02A434BAFDBB46E /* RNPlaceholder.swift */ = {isa = PBXFileReference; name = "RNPlaceholder.swift"; path = "RNPlaceholder.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -660,6 +661,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* chatReactNative2Tests.m in Sources */,
+				B339592D0ACB4AFC9979BB4B /* RNPlaceholder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,6 +671,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				B339592D0ACB4AFC9979BB4B /* RNPlaceholder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -678,6 +681,7 @@
 			files = (
 				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
 				2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */,
+				B339592D0ACB4AFC9979BB4B /* RNPlaceholder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,6 +690,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2DCD954D1E0B4F2C00145EB5 /* chatReactNative2Tests.m in Sources */,
+				B339592D0ACB4AFC9979BB4B /* RNPlaceholder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -737,6 +742,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/chatReactNative2.app/chatReactNative2";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -757,6 +763,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/chatReactNative2.app/chatReactNative2";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -782,7 +789,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = chatReactNative2;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -803,7 +810,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = chatReactNative2;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -833,6 +840,7 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -861,6 +869,7 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -888,6 +897,7 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/chatReactNative2-tvOS.app/chatReactNative2-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -915,6 +925,7 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/chatReactNative2-tvOS.app/chatReactNative2-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -975,6 +986,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -1028,6 +1040,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
