@@ -1,10 +1,13 @@
 import React, {useState, useRef, useEffect} from 'react';
 import {StyleSheet, View, Text, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import {useRecoilState} from 'recoil';
+import {currentUser} from '../recoil/atoms';
 
 import API from '../services/apiService';
 
 export default function Splash(props) {
+  const [user, setUser] = useRecoilState(currentUser);
   useEffect(() => {
     (async () => {
       const token = await AsyncStorage.getItem('token');
@@ -13,6 +16,7 @@ export default function Splash(props) {
         if (response.status === 200) {
           const {success, data} = response.data;
           if (success) {
+            setUser(data);
             await AsyncStorage.setItem('user', JSON.stringify(data));
             props.navigation.navigate('Home');
           } else {

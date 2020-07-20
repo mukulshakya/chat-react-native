@@ -3,6 +3,7 @@ import {View, Text} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import MusicSearch from '../../../screens/main/music/search';
+import MusicPlayer from '../../../screens/main/music/player';
 
 const viewStyle = ({backgroundColor}) => ({
   backgroundColor: backgroundColor || 'tomato',
@@ -38,7 +39,7 @@ export default function MusicStack() {
       <Stack.Screen
         options={{headerShown: false}}
         name="MusicPlayer"
-        component={ScreenTwo}
+        component={MusicPlayer}
       />
     </Stack.Navigator>
   );

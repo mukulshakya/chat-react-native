@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
   FlatList,
@@ -6,11 +6,11 @@ import {
   SafeAreaView,
   View,
   Animated,
-} from "react-native";
-import UserRow from "./main/conversation/userRow";
-import UserDetails from "./userDetailsModal";
+} from 'react-native';
+import UserRow from './main/conversation/userRow';
+import UserDetails from './userDetailsModal';
 
-const screenHeight = Math.round(Dimensions.get("window").height);
+const screenHeight = Math.round(Dimensions.get('window').height);
 const viewHeight = screenHeight - 238;
 
 export default function Body(props) {
@@ -20,14 +20,14 @@ export default function Body(props) {
 
   // console.log({ props });
 
-  const renderUserDetailsModal = ({ count }) => {
+  const renderUserDetailsModal = ({count}) => {
     setCurrentUser(count);
     setShowUserDetails(true);
 
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 200,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start();
   };
 
@@ -35,33 +35,33 @@ export default function Body(props) {
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 200,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start(() => setShowUserDetails(false));
   };
 
   return (
     <View>
-      <View style={{ paddingHorizontal: 20 }}>
-        <SafeAreaView style={{ height: viewHeight }}>
+      <View style={{paddingHorizontal: 20}}>
+        <SafeAreaView style={{height: viewHeight}}>
           <FlatList
             data={Array(100)
               .fill()
               .map((e, i) => i)}
-            renderItem={({ index }) => (
+            renderItem={({index}) => (
               <UserRow
                 count={index + 1}
                 showUserDetailsModal={(param) => renderUserDetailsModal(param)}
               />
             )}
-            keyExtractor={(index) => index + ""}
-            styles={{ overflow: "none" }}
+            keyExtractor={(index) => index + ''}
+            styles={{overflow: 'none'}}
           />
         </SafeAreaView>
       </View>
       {showUserDetails && (
         <UserDetails
-          image={"https://i.ya-webdesign.com/images/user-avatar-png-7.png"}
-          username={"username " + currentUser}
+          image={'https://i.ya-webdesign.com/images/user-avatar-png-7.png'}
+          username={'username ' + currentUser}
           viewHeight={viewHeight}
           closeModal={() => closeModal()}
           animate={fadeAnim}

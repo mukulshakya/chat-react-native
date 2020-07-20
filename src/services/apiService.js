@@ -133,4 +133,33 @@ func.getSongDetail = async (url) => {
   }
 };
 
+func.postMessage = async ({receiverId, message}) => {
+  try {
+    const res = await api.post('/messages/' + receiverId, {message});
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+func.getMessages = async ({receiverId, page}) => {
+  try {
+    const res = await api.get(`/messages/${receiverId}?page=${page || 1}`);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
+func.seenMessages = async ({receiverId, lastMsgId}) => {
+  try {
+    const res = await api.patch(`/messages/${receiverId}`, {
+      seenUntilMsgId: lastMsgId,
+    });
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+
 export default func;

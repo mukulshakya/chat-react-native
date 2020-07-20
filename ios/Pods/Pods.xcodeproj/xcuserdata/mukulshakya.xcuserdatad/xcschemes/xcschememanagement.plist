@@ -269,6 +269,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>react-native-slider.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>react-native-track-player.xcscheme</key>
 		<dict>
 			<key>isShown</key>

@@ -7,117 +7,167 @@ import {
   Platform,
   Keyboard,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
-import io from 'socket.io-client';
-import AsyncStorage from '@react-native-community/async-storage';
+import {useRecoilState, useRecoilValue} from 'recoil';
+import {msgListState, currentUser, userListState} from '../../../recoil/atoms';
+import {particularUserMsgState} from '../../../recoil/selectors';
+import socket from '../../../services/socket';
 
 import constants from '../../../constants';
 import TopBarWithUsernameAndBack from '../../../components/main/chat/topBarWithUserNameAndBack';
 import MessageInput from '../../../components/main/chat/msgInput';
 import ReceivedMessage from '../../../components/main/chat/receivedMsg';
 import SentMessage from '../../../components/main/chat/sentMsg';
+import FullScreenLoader from '../../../components/fullScreenLoader';
 
-const {isIos, hasNotch} = constants.screen;
+import API from '../../../services/apiService';
+
 export default function Chat({navigation, route}) {
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-
-  console.log({route});
-
-  const onKeyboardWillShow = (e) => {
-    console.log(
-      'show',
-      constants.screen.height -
-        (isIos ? (hasNotch ? 190 : 150) : hasNotch ? 170 : 100) -
-        e.endCoordinates.height,
-    );
-    const height =
-      e.endCoordinates.height + Platform.OS === 'android' ? 200 : 0;
-    setKeyboardHeight(height);
-  };
-
-  const onKeyboardWillHide = () => {
-    setKeyboardHeight(0);
-  };
+  const [msgList, setMsgList] = useRecoilState(msgListState);
+  const currentMessageState = useRecoilValue(particularUserMsgState);
+  const [isLoading, setIsLoading] = useState(true);
+  const [users, setUsers] = useRecoilState(userListState);
 
   useEffect(() => {
     const parent = navigation.dangerouslyGetParent();
     parent.setOptions({tabBarVisible: false});
-    if (Platform.OS === 'ios') {
-      Keyboard.addListener('keyboardWillShow', onKeyboardWillShow);
-      Keyboard.addListener('keyboardWillHide', onKeyboardWillHide);
-    } else {
-      Keyboard.addListener('keyboardDidShow', onKeyboardWillShow);
-      Keyboard.addListener('keyboardDidHide', onKeyboardWillHide);
-    }
 
-    const socket = io(constants.apiUrl.local);
-    socketSetup(socket);
+    fetchMessages();
+
+    socket.on(
+      'receive_message',
+      ({username, message, senderId, receiverId, msgData}) => {
+        fetchMessages();
+      },
+    );
 
     return () => {
-      socket.emit('disconnect');
-      if (Platform.OS === 'ios') {
-        Keyboard.removeListener('keyboardWillShow', onKeyboardWillShow);
-        Keyboard.removeListener('keyboardWillHide', onKeyboardWillHide);
-      } else {
-        Keyboard.removeListener('keyboardDidShow', onKeyboardWillShow);
-        Keyboard.removeListener('keyboardDidHide', onKeyboardWillHide);
-      }
       return parent.setOptions({tabBarVisible: true});
     };
   }, []);
 
-  const socketSetup = (socket) => {
-    socket.on('connect', async () => {
-      console.log('connection success');
-
-      const user = await AsyncStorage.getItem('user');
-      if (user) {
-        socket.emit('join', {senderId: JSON.parse(user)['_id']});
+  const fetchMessages = async () => {
+    try {
+      // console.log('here');
+      const userId = route.params?.user._id;
+      // console.log('here 1', userId);
+      const response = await API.getMessages({receiverId: userId, page: 1});
+      // console.log('here 2', response);
+      if (response.status === 200) {
+        if (response.data.success) {
+          const {
+            data: {messages, unseenMsgCount},
+          } = response.data;
+          const previousMessages = msgList[userId]?.messages || [];
+          const uniqueArray = constants.utils.getUniqueArray([
+            ...previousMessages,
+            ...messages,
+          ]);
+          const updates = {
+            ...msgList,
+            [userId]: {messages: uniqueArray, unseenMsgCount},
+          };
+          setMsgList(updates);
+          setIsLoading(false);
+          messages.length &&
+            seenMessages({lastMsgId: messages[0]._id, receiverId: userId});
+        }
       }
-    });
-    socket.on('disconnect', () => {
-      console.log('disconnect');
-      socket.emit('disconnected');
-    });
+    } catch (e) {
+      console.log('Message fetch error - ', e);
+    }
   };
 
-  const generateRandomMsg = () => {
-    let randomNum = Math.ceil(Math.random() * 20);
-    const r = Math.random().toString(36).substr(2, 5);
-    let randomString = '';
-    while (randomNum) {
-      randomString += r;
-      --randomNum;
+  const seenMessages = async ({lastMsgId, receiverId}) => {
+    try {
+      // const response = await API.seenMessages({receiverId, lastMsgId});
+      // console.log('here 2', response);
+      // if (response.status === 200) {
+      //   if (response.data.success) {
+      //     const {
+      //       data: {messages, unseenMsgCount},
+      //     } = response.data;
+      //     const previousMessages = msgList[userId]?.messages || [];
+      //     const uniqueArray = constants.utils.getUniqueArray([
+      //       ...previousMessages,
+      //       ...messages,
+      //     ]);
+      //     const updates = {
+      //       ...msgList,
+      //       [userId]: {messages: uniqueArray, unseenMsgCount},
+      //     };
+      //     setMsgList(updates);
+
+      //     seenMessages({lastMsgId: messages[0]._id, receiverId: userId});
+      //   }
+      // }
+    } catch (e) {
+      console.log('Message seen error - ', e);
     }
-    return randomString;
+  };
+
+  const sendMessage = (message) => {
+    const receiverId = route.params.user._id;
+    const newMessage = {
+      message,
+      _id: Math.random().toString(36),
+      createdAt: new Date().toISOString(),
+      isCurrentUserSender: true,
+    };
+    setMsgList({
+      ...msgList,
+      [receiverId]: {
+        messages: [newMessage, ...msgList[receiverId].messages],
+        unseenMsgCount: msgList[receiverId].unseenMsgCount,
+      },
+    });
+
+    socket.emit('send_message', {receiverId, message});
+
+    // Refresh users list
+    const tempUsers = [...users];
+    const index = tempUsers.findIndex((user) => user._id === receiverId);
+    const user = tempUsers.splice(index, 1)[0];
+    tempUsers.unshift({
+      ...user,
+      lastMessage: message,
+      lastMessageDate: new Date().toISOString(),
+    });
+    setUsers([...tempUsers]);
   };
 
   return (
     <View style={styles.container}>
+      {isLoading && <FullScreenLoader />}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.innerContainer}>
           <TopBarWithUsernameAndBack
             navigation={navigation}
-            username={route.params?.username ?? 'username'}
+            username={route.params?.user.username ?? 'username'}
           />
           <FlatList
             inverted
-            data={Array(30)
-              .fill()
-              .map((e, i) => i)}
-            renderItem={({index}) =>
-              index % 2 ? (
-                <ReceivedMessage message={generateRandomMsg()} />
+            data={currentMessageState.messages}
+            renderItem={({
+              index,
+              item: {isCurrentUserSender, message, createdAt},
+            }) =>
+              isCurrentUserSender ? (
+                <SentMessage message={message} time={createdAt} />
               ) : (
-                <SentMessage message={generateRandomMsg()} />
+                <ReceivedMessage message={message} time={createdAt} />
               )
             }
-            keyExtractor={(index) => index + ''}
+            keyExtractor={(item) => item._id}
             styles={{overflow: 'none'}}
           />
           <KeyboardAvoidingView
-            behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
-            <MessageInput navigation={navigation} />
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <MessageInput
+              navigation={navigation}
+              sendMessage={(message) => sendMessage(message)}
+            />
           </KeyboardAvoidingView>
         </View>
       </TouchableWithoutFeedback>

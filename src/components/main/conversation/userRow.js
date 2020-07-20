@@ -1,8 +1,11 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import constants from '../../../constants';
+import {useRecoilState} from 'recoil';
+import {particularUserIdState} from '../../../recoil/atoms.js';
 
-export default function UserRow({user, navigation}) {
+export default function UserRow({user, navigation, fetchUsers}) {
+  const [userId, setUserId] = useRecoilState(particularUserIdState);
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity
@@ -19,10 +22,18 @@ export default function UserRow({user, navigation}) {
       <TouchableOpacity
         style={{flex: 1}}
         activeOpacity={0.8}
-        onPress={() => navigation.navigate('Chat', {username: user.username})}>
+        onPress={() => {
+          setUserId(user._id);
+          navigation.navigate('Chat', {user});
+        }}>
         <Text style={styles.username}>{user.username}</Text>
-        <Text style={styles.lastMsg}>username</Text>
+        <Text style={styles.lastMsg}>{user.lastMessage || ''}</Text>
       </TouchableOpacity>
+      {user.unseenMsgCount && (
+        <View style={styles.unseenMsgCountWrapper}>
+          <Text style={styles.unseenMsgCount}>{user.unseenMsgCount}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -32,7 +43,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingBottom: 18,
     width: constants.screen.width,
-    paddingLeft: 20
+    paddingHorizontal: 20,
+    alignItems: 'center',
   },
   tinyLogo: {height: 55, width: 55},
   username: {
@@ -48,5 +60,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginLeft: 15,
     color: constants.colors.chatDate,
+  },
+  unseenMsgCountWrapper: {
+    backgroundColor: constants.colors.msgSent,
+    borderRadius: 2000,
+    height: 20,
+    width: 20,
+  },
+  unseenMsgCount: {
+    textAlign: 'center',
+    lineHeight: 20,
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: constants.colors.username,
   },
 });

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {useRecoilState} from 'recoil';
-import {userListState} from '../../../recoil/atoms';
+import {useRecoilState, useRecoilValue} from 'recoil';
+import {userListState, currentUser} from '../../../recoil/atoms';
 import {filteredUserListState} from '../../../recoil/selectors';
 import {
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import socket from '../../../services/socket';
 
 import UserRow from '../../../components/main/conversation/userRow';
 import TopBarWithSettingIcon from '../../../components/main/conversation/topBarWithSettingIcon';
@@ -16,14 +17,23 @@ import SearchBar from '../../../components/main/conversation/searchBar';
 import FullScreenLoader from '../../../components/fullScreenLoader';
 import constants from '../../../constants';
 import API from '../../../services/apiService';
-import { useRecoilValue } from 'recoil';
 
 export default function Conversations({navigation}) {
   const [users, setUsers] = useRecoilState(userListState);
-  const filteredUsers = useRecoilValue(filteredUserListState)
+  const filteredUsers = useRecoilValue(filteredUserListState);
+  const currentLoggedUser = useRecoilValue(currentUser);
 
   useEffect(() => {
     fetchUsers();
+    socket.emit('join', {senderId: currentLoggedUser._id});
+
+    socket.on('online', (data) => {
+      console.log({data});
+    });
+
+    socket.on('receive_message', () => {
+      fetchUsers();
+    });
   }, []);
 
   const fetchUsers = async () => {
@@ -48,7 +58,11 @@ export default function Conversations({navigation}) {
           data={filteredUsers}
           renderItem={({item, index}) => (
             // console.log({ item }),
-            <UserRow navigation={navigation} user={item} />
+            <UserRow
+              navigation={navigation}
+              user={item}
+              fetchUsers={fetchUsers}
+            />
           )}
           keyExtractor={(item) => item._id}
           styles={{overflow: 'none'}}

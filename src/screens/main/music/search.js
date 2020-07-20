@@ -9,8 +9,8 @@ import {
   Keyboard,
   FlatList,
 } from 'react-native';
-
-// import {postListState} from '../../../recoil/atoms';
+import {useRecoilState} from 'recoil';
+import {songListState} from '../../../recoil/atoms';
 
 import API from '../../../services/apiService';
 import constants from '../../../constants';
@@ -20,15 +20,24 @@ import FullScreenLoader from '../../../components/fullScreenLoader';
 
 export default function MusicSearch({navigation, route}) {
   const [isLoading, setIsLoading] = useState(false);
-  const [songs, setSongs] = useState([]);
+  const [songs, setSongs] = useRecoilState(songListState);
   const fetchSongs = async (text) => {
     try {
-      // console
       Keyboard.dismiss();
       setIsLoading(true);
       const res = await API.searchSong(text);
-      console.log('song res - ', res.data);
-      setSongs([...res.data]);
+      const convertedSongs = res.data.map(
+        ({id, media_url, song, album, singers, image, duration}) => ({
+          id: id,
+          url: media_url,
+          title: song + ' - ' + singers,
+          artist: singers,
+          artwork: image,
+          duration: parseInt(duration),
+        }),
+      );
+
+      setSongs([...convertedSongs]);
       setIsLoading(false);
     } catch (e) {
       console.log('fetch songs error - ', e);
@@ -39,14 +48,21 @@ export default function MusicSearch({navigation, route}) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={[styles.container, styles.coverAll]}>
         {isLoading && <FullScreenLoader />}
-        <View style={[styles.container, styles.coverAll]}>
+        <View
+          style={[
+            styles.container,
+            styles.coverAll,
+            {marginTop: constants.screen.isAndroid ? 20 : 0},
+          ]}>
           <SearchBar cb={(text) => fetchSongs(text)} />
           <View style={[styles.tiles]}>
             <FlatList
               numColumns={2}
               columnWrapperStyle={{paddingVertical: 10}}
               data={songs}
-              renderItem={({item}) => <Tile image={item.image} />}
+              renderItem={({item}) => (
+                <Tile song={item} navigation={navigation} />
+              )}
               keyExtractor={() => Math.random().toString()}
             />
           </View>

@@ -9,7 +9,7 @@ const {
   colors: {msgSent, chatDate, username, bottomNav},
 } = constants;
 
-export default function MessageInput() {
+export default function MessageInput({navigation, sendMessage}) {
   const [value, setValue] = useState('');
 
   return (
@@ -25,7 +25,11 @@ export default function MessageInput() {
       <TouchableOpacity
         disabled={!value}
         style={[styles.icon, isIos && styles.iconIos]}
-        activeOpacity={0.7}>
+        activeOpacity={0.7}
+        onPress={() => {
+          sendMessage(value);
+          setValue('');
+        }}>
         <MaterialCommunityIcons
           name={'send-circle'}
           color={value ? msgSent : chatDate}
@@ -46,9 +50,10 @@ const styles = StyleSheet.create({
     backgroundColor: bottomNav,
     borderWidth: 0.2,
     borderRadius: 7,
+    padding: 2,
   },
   input: {paddingHorizontal: 10, width: '90%', color: username, maxHeight: 100},
   inputIos: {marginTop: 5, marginBottom: 10},
   icon: {right: 8, color: msgSent},
-  iconIos: {top: 1, right: hasNotch ? 0 : 5},
+  iconIos: {top: hasNotch ? 0 : 1, right: hasNotch ? 0 : 5},
 });

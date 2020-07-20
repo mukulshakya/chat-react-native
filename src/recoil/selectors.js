@@ -1,6 +1,11 @@
 import {selector} from 'recoil';
 
-import {userListState, userSearchFilter} from './atoms';
+import {
+  userListState,
+  userSearchFilter,
+  msgListState,
+  particularUserIdState,
+} from './atoms';
 
 export const filteredUserListState = selector({
   key: 'filteredUserListState',
@@ -9,27 +14,20 @@ export const filteredUserListState = selector({
     const userList = get(userListState);
 
     const pattern = new RegExp(search, 'i');
-    console.log({pattern});
     return search
       ? userList.filter(({username}) => pattern.test(username))
       : userList;
   },
 });
 
-// export const todoListStatsState = selector({
-//   key: 'todoListStatsState',
-//   get: ({get}) => {
-//     const todoList = get(filteredTodoListState);
-//     const totalNum = todoList.length;
-//     const totalCompletedNum = todoList.filter((item) => item.isComplete).length;
-//     const totalUncompletedNum = totalNum - totalCompletedNum;
-//     const percentCompleted = totalNum === 0 ? 0 : totalCompletedNum / totalNum;
+export const particularUserMsgState = selector({
+  key: 'particularUserMsgState',
+  get: ({get}) => {
+    const msgList = get(msgListState);
+    const particularUserId = get(particularUserIdState);
+    // console.log({particularUserId});
+    // console.log({msglist: msgList[particularUserId]});
 
-//     return {
-//       totalNum,
-//       totalCompletedNum,
-//       totalUncompletedNum,
-//       percentCompleted,
-//     };
-//   },
-// });
+    return msgList[particularUserId] || {messages: [], unseenMsgCount: 0};
+  },
+});
