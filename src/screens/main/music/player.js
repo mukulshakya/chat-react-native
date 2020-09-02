@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import Slider from 'react-native-slider';
+import Slider from '@react-native-community/slider';
 import TrackPlayer, {
   usePlaybackState,
   useTrackPlayerProgress,
@@ -36,9 +36,10 @@ export default function MusicPlayer({navigation, route}) {
   useTrackPlayerEvents(
     ['playback-state', 'playback-track-changed', 'remote-seek', 'remote-pause'],
     async (event) => {
+      console.log({event});
       if (event.type === 'playback-state') {
-        setIsBuffering(event.state === 6);
-        setIsPlaying(event.state === 3);
+        setIsBuffering(['buffering', 6].includes(event.state));
+        setIsPlaying(['playing', 3].includes(event.state));
       }
       if (event.type === TrackPlayerEvents.PLAYBACK_TRACK_CHANGED) {
         const track = await TrackPlayer.getTrack(event.nextTrack);

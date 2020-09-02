@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import constants from "../../../constants";
+import React, {useState} from 'react';
+import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import constants from '../../../constants';
 
-export default function Post({ data: { user, image, caption, noOfLikes } }) {
+export default function Post({data: {user, image, caption, noOfLikes}}) {
   const [expanded, setExpanded] = useState(false);
 
   const renderCaption = (caption) => {
@@ -11,13 +11,12 @@ export default function Post({ data: { user, image, caption, noOfLikes } }) {
       <Text style={styles.caption}>
         {expanded || caption.length < 101
           ? caption
-          : caption.substr(0, 100) + "... "}
+          : caption.substr(0, 100) + '... '}
         {caption.length > 100 && (
           <Text
-            style={{ color: constants.colors.chatDate }}
-            onPress={() => setExpanded(!expanded)}
-          >
-            {expanded ? " less" : "more"}
+            style={{color: constants.colors.chatDate}}
+            onPress={() => setExpanded(!expanded)}>
+            {expanded ? ' less' : 'more'}
           </Text>
         )}
       </Text>
@@ -28,13 +27,13 @@ export default function Post({ data: { user, image, caption, noOfLikes } }) {
     <View style={styles.container}>
       <View style={styles.userDetails}>
         <Image
-          source={{ uri: user.profileImg || constants.dummy.images.user }}
+          source={{uri: user.profileImg || constants.dummy.images.user}}
           style={styles.userImg}
         />
         <Text style={styles.userName}>{user.username}</Text>
       </View>
       <View>
-        <Image source={{ uri: image }} style={styles.postImg} />
+        <Image source={{uri: image}} style={styles.postImg} />
       </View>
       <View style={styles.activity}>
         <View style={styles.likeComment}>
@@ -77,29 +76,29 @@ export default function Post({ data: { user, image, caption, noOfLikes } }) {
 }
 
 const styles = StyleSheet.create({
-  container: { paddingBottom: 10 },
+  container: {paddingBottom: 10},
   userDetails: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 5,
     paddingLeft: 10,
   },
-  userImg: { height: 40, width: 40 },
+  userImg: {height: 40, width: 40},
   userName: {
     fontSize: 20,
     color: constants.colors.username,
     marginLeft: 10,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
-  postImg: { width: "100%", height: constants.screen.height / 4 },
+  postImg: {width: '100%', height: constants.screen.height / 4},
   activity: {
     paddingVertical: 5,
     paddingHorizontal: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  likeComment: { flexDirection: "row" },
-  comment: { marginLeft: 10 },
-  captionWrapper: { paddingHorizontal: 10 },
-  caption: { color: constants.colors.username },
+  likeComment: {flexDirection: 'row'},
+  comment: {marginLeft: 10},
+  captionWrapper: {paddingHorizontal: 10},
+  caption: {color: constants.colors.username},
 });

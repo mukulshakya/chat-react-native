@@ -72,6 +72,12 @@ export default function Chat({navigation, route}) {
           setIsLoading(false);
           messages.length &&
             seenMessages({lastMsgId: messages[0]._id, receiverId: userId});
+
+          // Change unseenMsgCount to 0
+          const tempUsers = [...users];
+          const index = tempUsers.findIndex((user) => user._id === userId);
+          tempUsers[index].unseenMsgCount = 0;
+          setUsers([...tempUsers]);
         }
       }
     } catch (e) {
@@ -98,7 +104,6 @@ export default function Chat({navigation, route}) {
       //       [userId]: {messages: uniqueArray, unseenMsgCount},
       //     };
       //     setMsgList(updates);
-
       //     seenMessages({lastMsgId: messages[0]._id, receiverId: userId});
       //   }
       // }

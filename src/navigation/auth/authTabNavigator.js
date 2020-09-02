@@ -10,10 +10,22 @@ export default function MyTabs() {
   return (
     <Tab.Navigator
       tabBarOptions={{
+        activeTintColor: 'white',
+        inactiveTintColor: constants.colors.chatDate,
         style: {
           paddingTop: constants.deviceInfo.hasNotch() ? 30 : 0,
-          backgroundColor: 'transparent',
+          backgroundColor: constants.colors.bottomNav,
+          color: 'white',
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 8,
+          },
+          shadowOpacity: 0.46,
+          shadowRadius: 11.14,
+          elevation: 17,
         },
+        indicatorStyle: {backgroundColor: 'white', height: 1},
       }}>
       <Tab.Screen name="Login" component={LoginScreen} />
       <Tab.Screen name="SignUp" component={SignUpScreen} />

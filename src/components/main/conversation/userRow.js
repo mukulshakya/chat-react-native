@@ -6,6 +6,10 @@ import {particularUserIdState} from '../../../recoil/atoms.js';
 
 export default function UserRow({user, navigation, fetchUsers}) {
   const [userId, setUserId] = useRecoilState(particularUserIdState);
+
+  const renderMsg = (msg) =>
+    msg.length > 25 ? msg.substr(0, 25) + '...' : msg;
+
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity
@@ -27,7 +31,7 @@ export default function UserRow({user, navigation, fetchUsers}) {
           navigation.navigate('Chat', {user});
         }}>
         <Text style={styles.username}>{user.username}</Text>
-        <Text style={styles.lastMsg}>{user.lastMessage || ''}</Text>
+        <Text style={styles.lastMsg}>{renderMsg(user.lastMessage || '')}</Text>
       </TouchableOpacity>
       {user.unseenMsgCount && (
         <View style={styles.unseenMsgCountWrapper}>
